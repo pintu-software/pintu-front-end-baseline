@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
-import Logo from 'images/pintu-recruiter-logo-white.png';
+import Logo from 'images/pintu-logo-white.png';
 import RefreshIcon from 'assets/common-images/refresh.svg';
 import UserIcon from 'assets/common-images/user.svg';
 import DropdownIcon from 'assets/common-images/dropdown.svg';
@@ -49,8 +49,8 @@ const Container = styled(Grid)`
 `;
 
 const LogoStyled = styled.img`
-  width: 180px;
-  height: 60px;
+  width: 80px;
+  height: 40px;
 `;
 
 const LeftBarContainer = styled.div`
@@ -86,10 +86,10 @@ const NavIconContainer = styled.div`
 
 const LeftBarSubContainer = styled.div`
   position: absolute;
-  width: 186px;
+  width: 226px;
   height: 100%;
   top: 62px;
-  left: 60px;
+  left: 0;
   bottom: 0;
   background-color: #47474f;
   text-align: left;
@@ -147,7 +147,7 @@ const LearningIconStyled = styled.img`
 `;
 
 const MenuContainer = styled.div`
-  width: 186px;
+  width: 226px;
   height: 60px;
   display: flex;
   align-items: center;
@@ -185,20 +185,9 @@ class DashboardLayout extends React.PureComponent {
     alert('refresh');
   };
 
-  showEquities = () => {
-    // this.setState({
-    //   showEquities: true,
-    // });
-  };
-
   goToExplore = () => {
     const { history } = this.props;
-    history.push('/equities/explore');
-  };
-
-  goToWatchlist = () => {
-    const { history } = this.props;
-    history.push('/equities/watchlist');
+    history.push('/');
   };
 
   componentWillUnmount() {
@@ -275,27 +264,10 @@ class DashboardLayout extends React.PureComponent {
             </Grid>
           </Toolbar>
         </AppBarStyled>
-        <LeftBarContainer>
-          <NavIconContainer
-            active={url.includes('equities')}
-            onClick={this.showEquities}
-          >
-            <DashboardIconStyled src={DashboardIcon} alt="dashboard" />
-          </NavIconContainer>
-          <NavIconContainer>
-            <LearningIconStyled src={LearningIcon} alt="learning" />
-          </NavIconContainer>
-        </LeftBarContainer>
         <LeftBarSubContainer>
           <LeftBarSubTitle>Recruitment</LeftBarSubTitle>
-          <MenuContainer active={url.includes('explore')} onClick={this.goToExplore}>
+          <MenuContainer active={url === '/'} onClick={this.goToExplore}>
             Overview
-          </MenuContainer>
-          <MenuContainer
-            active={url.includes('watchlist')}
-            onClick={this.goToWatchlist}
-          >
-            Watchlist
           </MenuContainer>
         </LeftBarSubContainer>
         <Container container>{children}</Container>

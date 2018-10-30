@@ -444,7 +444,7 @@ export class Explore extends React.PureComponent {
   };
 
   goToCardDetails = id => {
-    this.props.history.push(`/equities/explore/summary/${id}`);
+    this.props.history.push(`/applicant/${id}`);
   };
 
   render() {

@@ -52,7 +52,7 @@ export class App extends React.Component {
     return (
       <Switch>
         <Route exact path="/login" name="login" component={Login} />
-        <Route exact path="/equities/explore" name="explore" component={Explore} />
+        <Route exact path="/" name="overview" component={Explore} />
         <Route path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
       </Switch>

@@ -12,7 +12,7 @@ import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 
 import styled from 'styled-components';
-import LogoImg from 'images/pintu-recruiter-logo-purple.png';
+import LogoImg from 'images/pintu-logo-purple.png';
 import { Grid, Paper, TextField, Hidden } from '@material-ui/core';
 import Button from 'components/Button';
 
