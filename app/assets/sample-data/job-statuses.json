@@ -1,0 +1,22 @@
+[
+  {
+    "label": "New",
+    "value": 1
+  },
+  {
+    "label": "Invited",
+    "value": 2
+  },
+  {
+    "label": "Keep In View",
+    "value": 3
+  },
+  {
+    "label": "Rejected",
+    "value": 4
+  },
+  {
+    "label": "Hired",
+    "value": 5
+  }
+]

@@ -1,0 +1,9 @@
+/*
+ *
+ * Explore constants
+ *
+ */
+
+export const GET_ALL_APPLICANTS = 'GET_ALL_APPLICANTS';
+export const GET_ALL_APPLICANTS_SUCCESS = 'GET_ALL_APPLICANTS_SUCCESS';
+export const GET_ALL_APPLICANTS_FAILED = 'GET_ALL_APPLICANTS_FAILED';
