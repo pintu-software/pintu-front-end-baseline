@@ -119,7 +119,7 @@ const ResetText = styled.p`
   line-height: 1.5;
   letter-spacing: 0.1px;
   text-align: right;
-  color: #ffbc12;
+  color: #ffffff;
   margin: 0;
   text-decoration: underline;
   margin-left: 3px;
@@ -146,10 +146,12 @@ const Table = styled.table`
 
   tr {
     padding: 8px;
-    background-color: #56565b;
+    border-top: solid 1.5px #26272c;
+    border-bottom: solid 1.5px #26272c;
+    background-color: #353540;
 
     &:nth-child(even) {
-      background-color: #3d3d42;
+      // background-color: #3d3d42;
     }
   }
 
@@ -167,8 +169,8 @@ const Table = styled.table`
   th {
     padding: 10px 20px;
     text-align: left;
-    background-color: #6d6e71;
-    font-size: 10px;
+    background-color: #26272c;
+    font-size: 14px;
     font-weight: bold;
     font-style: normal;
     font-stretch: normal;
@@ -547,7 +549,6 @@ export class Explore extends React.PureComponent {
                 <th>Full Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Linkedin URL</th>
                 <th>Rank</th>
                 <th>Status</th>
                 <th>Job Applied</th>
@@ -559,7 +560,6 @@ export class Explore extends React.PureComponent {
                   <td>{applicant.full_name}</td>
                   <td>{applicant.email}</td>
                   <td>{applicant.phone}</td>
-                  <td>{applicant.linkedin_url}</td>
                   <td>{applicant.rank}</td>
                   <td>{applicant.status}</td>
                   <td>{applicant.job_title}</td>

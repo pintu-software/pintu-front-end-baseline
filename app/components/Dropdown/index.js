@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import DropdownIcon from 'assets/common-images/dropdown-yellow.svg';
+import DropdownIcon from 'assets/common-images/dropdown.svg';
 import CheckboxIcon from 'assets/common-images/checkbox-black.svg';
 import CheckmarkIcon from 'assets/common-images/checkmark.svg';
 

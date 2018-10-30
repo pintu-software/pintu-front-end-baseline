@@ -11,9 +11,10 @@ import moment from 'moment';
 import Logo from 'images/pintu-logo-white.png';
 import RefreshIcon from 'assets/common-images/refresh.svg';
 import UserIcon from 'assets/common-images/user.svg';
-import DropdownIcon from 'assets/common-images/dropdown.svg';
+import DropdownIcon from 'assets/common-images/caret.svg';
 import DashboardIcon from 'assets/common-images/dashboard-white.svg';
 import LearningIcon from 'assets/common-images/learning-white.svg';
+import Person from '@material-ui/icons/Person';
 
 import {
   AppBar,
@@ -123,7 +124,7 @@ const UserIconStyled = styled.img`
 const DropdownIconStyled = styled.img`
   width: 15px;
   height: 15px;
-  margin-left: 2px;
+  margin-left: 8px;
 `;
 
 const RefreshIconContainer = styled.div`
@@ -203,15 +204,6 @@ class DashboardLayout extends React.PureComponent {
       user,
     } = this.props;
 
-    let displayName = 'Loading..';
-    if (user) {
-      const {
-        FullUserName
-      } = user;
-
-      displayName = FullUserName;
-    }
-
     return (
       <MainContainer>
         <AppBarStyled position="static">
@@ -236,8 +228,8 @@ class DashboardLayout extends React.PureComponent {
                 aria-haspopup="true"
                 onClick={this.handleClick}
               >
-                <UserIconStyled src={UserIcon} alt="user" />
-                <p>{displayName}</p>
+                {/* <UserIconStyled src={UserIcon} alt="user" /> */}
+                <Person style={{ color: '#ffffff' }} />
                 <DropdownIconStyled src={DropdownIcon} alt="dropdown" />
               </IconButton>
               <Popover

@@ -22,11 +22,11 @@ const List = styled.li`
   min-width: 40px;
   height: 40px;
   border-radius: 3px;
-  border: solid 1px #ffbc12;
+  border: solid 1px #ffffff;
   margin-right: 10px;
   cursor: pointer;
-  background-color: ${({ active }) => (active ? '#ffbc12' : '')};
-  color: ${({ active }) => (active ? '#000000' : '#ffbc12')};
+  background-color: ${({ active }) => (active ? '#ffffff' : '')};
+  color: ${({ active }) => (active ? '#000000' : '#ffffff')};
 `;
 
 const TextList = List.extend`
@@ -43,7 +43,7 @@ const Anchor = styled.div`
   text-align: center;
   text-decoration: none;
   box-shadow: none !important;
-  color: ${({ active }) => (active ? '#000000' : '#ffbc12')};
+  color: ${({ active }) => (active ? '#000000' : '#ffffff')};
   padding: 10px;
 `;
 
