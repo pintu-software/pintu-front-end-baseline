@@ -194,8 +194,8 @@ const PaginationRow = styled.div`
 /* eslint-disable react/prefer-stateless-function */
 export class Explore extends React.PureComponent {
   state = {
-    jobArray: [],
-    statusArray: [],
+    job: 'All',
+    status: 'All',
     sorted: 'highest',
     currentApplicants: [],
     currentPage: 1,
@@ -238,8 +238,9 @@ export class Explore extends React.PureComponent {
       return;
     } else if (keysToUpdate.length < 1 && this.props.applicants.data.length < 1) {
       return this.props.getAllApplicants({
-        statusArray: [],
-        jobArray: [],
+        status: 'All',
+        job: 'All',
+        sorted: 'highest',
       });
     }
 
@@ -252,14 +253,14 @@ export class Explore extends React.PureComponent {
 
     this.setState(stateUpdatePayload, () => {
       const {
-        statusArray,
-        jobArray,
+        status,
+        job,
         sorted,
       } = this.state;
 
       this.props.getAllApplicants({
-        statusArray,
-        jobArray,
+        status,
+        job,
         sorted,
       });
     });
@@ -267,7 +268,8 @@ export class Explore extends React.PureComponent {
 
   _getQueryStringParameters() {
     const payload = {
-      statusArray: [],
+      status: 'All',
+      job: 'All',
       sorted: 'highest',
       page: 1,
     };
@@ -323,10 +325,10 @@ export class Explore extends React.PureComponent {
     const currentApplicants = allApplicants.slice(offset, offset + pageLimit);
 
     this.setState({ currentPage, currentApplicants, totalPages }, () => {
-      const { statusArray, jobArray, sorted } = this.state;
+      const { status, job, sorted } = this.state;
       this.manageFilterChanges({
-        statusArray,
-        jobArray,
+        status,
+        job,
         sorted,
         page: currentPage,
       });
@@ -334,52 +336,14 @@ export class Explore extends React.PureComponent {
   };
 
   dropdownFilterChange = (name, value) => {
-    const { statusArray, jobArray, currentPage } = this.state;
+    const { status, job, sorted, currentPage } = this.state;
 
-    let updatedStatusArray = _.clone(statusArray);
-    if (name === 'statusArray') {
-      const selected = _.filter(statusArray, x => x === value);
-      if (selected.length > 0) {
-        updatedStatusArray = _.filter(statusArray, x => x !== value);
-      } else {
-        updatedStatusArray.push(value);
-      }
-    }
-
-    let updatedJobArray = _.clone(jobArray);
-    if (name === 'jobArray') {
-      const selected = _.filter(jobArray, x => x === value);
-      if (selected.length > 0) {
-        updatedJobArray = _.filter(jobArray, x => x !== value);
-      } else {
-        updatedJobArray.push(value);
-      }
-    }
+    const updatedStatus = name === 'status' ? value : status;
+    const updatedJob = name === 'job' ? value : job;
 
     this.manageFilterChanges({
-      statusArray: updatedStatusArray,
-      jobArray: updatedJobArray,
-      sorted,
-      page: currentPage,
-    });
-  };
-
-  removeFilter = (name, filter) => {
-    const { statusArray, sorted, currentPage } = this.state;
-
-    let updatedStatusArray = _.clone(statusArray);
-    if (name === 'statusArray') {
-      updatedStatusArray = _.filter(statusArray, x => x !== filter);
-    }
-
-    let updatedJobArray = _.clone(jobArray);
-    if (name === 'jobArray') {
-      updatedJobArray = _.filter(jobArray, x => x !== filter);
-    }
-
-    this.manageFilterChanges({
-      statusArray: updatedStatusArray,
-      jobArray: updatedJobArray,
+      status: updatedStatus,
+      job: updatedJob,
       sorted,
       page: currentPage,
     });
@@ -394,22 +358,19 @@ export class Explore extends React.PureComponent {
     }
 
     const {
-      statusArray,
-      jobArray,
+      status,
+      job,
       sorted,
       page,
     } = filters;
 
-    const status = statusArray.join(',');
-    const job = jobArray.join(',');
-
     const parameters = [];
 
-    if (status.length > 0) {
+    if (status) {
       parameters.push(`status=${status}`);
     }
 
-    if (job.length > 0) {
+    if (job) {
       parameters.push(`job=${job}`);
     }
 
@@ -427,14 +388,14 @@ export class Explore extends React.PureComponent {
   };
 
   sortByRank = sortBy => {
-    const { statusArray, jobArray, currentPage } = this.state;
+    const { status, job, currentPage } = this.state;
 
     this.setState({
       sorted: sortBy,
     }, () => {
       this.manageFilterChanges({
-        statusArray,
-        jobArray,
+        status,
+        job,
         sorted: sortBy,
         page: currentPage,
       });
@@ -452,25 +413,22 @@ export class Explore extends React.PureComponent {
   render() {
     const { history, match } = this.props;
     const {
-      statusArray,
-      jobArray,
+      status,
+      job,
+      sorted,
       currentApplicants,
       currentPage,
       totalPages,
-      sorted,
     } = this.state;
 
-    if (
-      this.props.applicants.loading ||
-      this.props.applicants.data.length < 1
-    ) {
+    if (this.props.applicants.loading) {
       return (
         <DashboardLayout history={history} match={match}>
           <Loading />
         </DashboardLayout>
       );
     }
-
+    
     const allApplicants = this.props.applicants.data;
 
     const totalApplicants = allApplicants.length;
@@ -486,19 +444,19 @@ export class Explore extends React.PureComponent {
             <Label>Filter by</Label>
             <FilterBoxContainer>
               <Dropdown
-                type="secondary"
+                type="primary"
                 items={statuses}
-                selectedArr={statusArray}
-                placeholder="Status"
-                name="statusArray"
+                selectedItem={status}
+                placeholder={status ? status : 'Status'}
+                name="status"
                 onChange={this.dropdownFilterChange}
               />
               <Dropdown
-                type="secondary"
+                type="primary"
                 items={jobs}
-                selectedArr={jobArray}
-                placeholder="Job"
-                name="jobArray"
+                selectedItem={job}
+                placeholder={job ? job : 'Job'}
+                name="job"
                 onChange={this.dropdownFilterChange}
               />
             </FilterBoxContainer>
@@ -534,16 +492,9 @@ export class Explore extends React.PureComponent {
             <ResetText>Reset Filter</ResetText>
           </ResetIconContainer>
         </ResetFilterRow>
-        <SelectedFilterRow>
-          {statusArray.map(seletedFilter => (
-            <SelectedFilter
-              seletedFilter={seletedFilter}
-              onClick={() => this.removeFilter('statusArray', seletedFilter)}
-            />
-          ))}
-        </SelectedFilterRow>
         <CardRow>
           <Table>
+            {totalApplicants === 0 && <div>No data</div>}
             <thead>
               <tr>
                 <th>Full Name</th>
@@ -555,7 +506,7 @@ export class Explore extends React.PureComponent {
               </tr>
             </thead>
             <tbody>
-              {currentApplicants.map(applicant => (
+              {allApplicants.map(applicant => (
                 <tr key={applicant.id}>
                   <td>{applicant.full_name}</td>
                   <td>{applicant.email}</td>

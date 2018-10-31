@@ -1,14 +1,14 @@
 [
   {
-    "label": "Praktikant",
-    "value": 1
-  },
-  {
-    "label": "Talentfuld kommunikationsrådgiver",
-    "value": 2
+    "label": "All",
+    "value": "All"
   },
   {
     "label": "Intern",
-    "value": 3
+    "value": "Intern"
+  },
+  {
+    "label": "Developer",
+    "value": "Developer"
   }
 ]

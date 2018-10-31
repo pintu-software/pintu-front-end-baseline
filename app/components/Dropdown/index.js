@@ -125,6 +125,12 @@ const CheckboxLabel = styled.div`
   color: #00000;
 `;
 
+const Label = styled.span`
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 13px;
+`;
+
 /* eslint-disable react/prefer-stateless-function */
 class Dropdown extends React.PureComponent {
   state = {
@@ -180,6 +186,7 @@ class Dropdown extends React.PureComponent {
       case 'primary':
         return (
           <Container>
+            <Label>{name}</Label>
             <DropdownContainer>
               <Button
                 disabled={disabled}

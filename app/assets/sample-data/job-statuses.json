@@ -1,22 +1,26 @@
 [
   {
+    "label": "All",
+    "value": "All"
+  },
+  {
     "label": "New",
-    "value": 1
+    "value": "New"
   },
   {
     "label": "Invited",
-    "value": 2
+    "value": "Invited"
   },
   {
     "label": "Keep In View",
-    "value": 3
+    "value": "Keep In View"
   },
   {
     "label": "Rejected",
-    "value": 4
+    "value": "Rejected"
   },
   {
     "label": "Hired",
-    "value": 5
+    "value": "Hired"
   }
 ]
