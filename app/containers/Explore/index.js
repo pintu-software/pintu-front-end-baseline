@@ -125,15 +125,7 @@ const ResetText = styled.p`
   margin-left: 3px;
 `;
 
-const SelectedFilterRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  max-width: 1125px;
-  margin-bottom: 18px;
-`;
-
-const CardRow = styled.div`
+const ContentRow = styled.div`
   width: 100vw;
   // max-width: 1125px;
   display: flex;
@@ -199,8 +191,8 @@ export class Explore extends React.PureComponent {
     sorted: 'highest',
     currentApplicants: [],
     currentPage: 1,
+    pageLimit: 10,
     totalPages: null,
-    allApplicants: [],
   };
 
   componentWillMount() {
@@ -418,17 +410,17 @@ export class Explore extends React.PureComponent {
       sorted,
       currentApplicants,
       currentPage,
-      totalPages,
+      pageLimit,
     } = this.state;
 
-    if (this.props.applicants.loading) {
+    if (this.props.applicants.loading || this.props.applicants.data.length < 1) {
       return (
         <DashboardLayout history={history} match={match}>
           <Loading />
         </DashboardLayout>
       );
     }
-    
+
     const allApplicants = this.props.applicants.data;
 
     const totalApplicants = allApplicants.length;
@@ -436,7 +428,7 @@ export class Explore extends React.PureComponent {
     return (
       <DashboardLayout history={history} match={match}>
         <SearchBarRow>
-          <Title>Recruitment</Title>
+          <Title>Overview</Title>
           <SearchBox />
         </SearchBarRow>
         <FilterSortRow container alignItems="center">
@@ -492,9 +484,8 @@ export class Explore extends React.PureComponent {
             <ResetText>Reset Filter</ResetText>
           </ResetIconContainer>
         </ResetFilterRow>
-        <CardRow>
-          <Table>
-            {totalApplicants === 0 && <div>No data</div>}
+        <ContentRow>
+          <Table>            
             <thead>
               <tr>
                 <th>Full Name</th>
@@ -518,11 +509,11 @@ export class Explore extends React.PureComponent {
               ))}
             </tbody>
           </Table>
-        </CardRow>
+        </ContentRow>
         <PaginationRow>
           <Pagination
             totalRecords={totalApplicants}
-            pageLimit={16}
+            pageLimit={pageLimit}
             currentPage={currentPage}
             onPageChanged={this.onPageChanged}
           />

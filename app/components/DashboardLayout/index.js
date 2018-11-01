@@ -94,7 +94,7 @@ const LeftBarSubContainer = styled.div`
   bottom: 0;
   background-color: #47474f;
   text-align: left;
-  padding-top: 78px;
+  padding-top: 30px;
 
   @media (max-width: 959px) {
     top: 62px;

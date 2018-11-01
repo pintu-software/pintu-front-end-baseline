@@ -126,9 +126,10 @@ const CheckboxLabel = styled.div`
 `;
 
 const Label = styled.span`
-  color: #ffffff;
+  color: #dddddd;
   text-transform: uppercase;
   font-size: 13px;
+  margin-bottom: 2px;
 `;
 
 /* eslint-disable react/prefer-stateless-function */
