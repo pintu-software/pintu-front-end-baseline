@@ -131,6 +131,7 @@ const ContentRow = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const Table = styled.table`
@@ -183,6 +184,11 @@ const PaginationRow = styled.div`
   justify-content: center;
 `;
 
+const Text = styled.p`
+  color: #dddddd;
+  font-size: 20px;
+`;
+
 /* eslint-disable react/prefer-stateless-function */
 export class Explore extends React.PureComponent {
   state = {
@@ -229,11 +235,7 @@ export class Explore extends React.PureComponent {
     if (keysToUpdate.length < 1 && this.props.applicants.data.length > 0) {
       return;
     } else if (keysToUpdate.length < 1 && this.props.applicants.data.length < 1) {
-      return this.props.getAllApplicants({
-        status: 'All',
-        job: 'All',
-        sorted: 'highest',
-      });
+      return;
     }
 
     const stateUpdatePayload = {};
@@ -413,7 +415,7 @@ export class Explore extends React.PureComponent {
       pageLimit,
     } = this.state;
 
-    if (this.props.applicants.loading || this.props.applicants.data.length < 1) {
+    if (this.props.applicants.loading && this.props.applicants.data.length < 1) {
       return (
         <DashboardLayout history={history} match={match}>
           <Loading />
@@ -485,7 +487,8 @@ export class Explore extends React.PureComponent {
           </ResetIconContainer>
         </ResetFilterRow>
         <ContentRow>
-          <Table>            
+          {totalApplicants === 0 && <Text>No data found.</Text>}
+          {totalApplicants > 0 && <Table>            
             <thead>
               <tr>
                 <th>Full Name</th>
@@ -508,7 +511,7 @@ export class Explore extends React.PureComponent {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </Table>}
         </ContentRow>
         <PaginationRow>
           <Pagination
