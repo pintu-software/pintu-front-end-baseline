@@ -415,10 +415,18 @@ export class Explore extends React.PureComponent {
       pageLimit,
     } = this.state;
 
-    if (this.props.applicants.loading && this.props.applicants.data.length < 1) {
+    if (this.props.applicants.loading) {
       return (
         <DashboardLayout history={history} match={match}>
           <Loading />
+        </DashboardLayout>
+      );
+    }
+
+    if (this.props.applicants.data.length === 0) {
+      return (
+        <DashboardLayout history={history} match={match}>
+          <Text>No data found.</Text>
         </DashboardLayout>
       );
     }
@@ -487,8 +495,7 @@ export class Explore extends React.PureComponent {
           </ResetIconContainer>
         </ResetFilterRow>
         <ContentRow>
-          {totalApplicants === 0 && <Text>No data found.</Text>}
-          {totalApplicants > 0 && <Table>            
+          <Table>            
             <thead>
               <tr>
                 <th>Full Name</th>
@@ -500,7 +507,7 @@ export class Explore extends React.PureComponent {
               </tr>
             </thead>
             <tbody>
-              {allApplicants.map(applicant => (
+              {currentApplicants.map(applicant => (
                 <tr key={applicant.id}>
                   <td>{applicant.full_name}</td>
                   <td>{applicant.email}</td>
@@ -511,7 +518,7 @@ export class Explore extends React.PureComponent {
                 </tr>
               ))}
             </tbody>
-          </Table>}
+          </Table>
         </ContentRow>
         <PaginationRow>
           <Pagination
