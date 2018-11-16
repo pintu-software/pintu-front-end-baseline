@@ -15,6 +15,13 @@ const initialState = {
     loading: false,
     error: null,
     data: [],
+    totalPages: 1,
+    page: 1,
+    pageSize: 1,
+    totalRecords: 1,
+    status: 'All', 
+    job: 'All', 
+    sorted: 'Highest',
   },
 };
 
@@ -26,14 +33,38 @@ function exploreReducer(state = initialState, action) {
         allApplicants: {
           loading: true,
           data: [],
+          totalPages: 1,
+          page: 1,
+          pageSize: 1,
+          totalRecords: 1,
         },
       };
     case GET_ALL_APPLICANTS_SUCCESS:
+      const {
+        payload: {
+          data,
+          totalPages,
+          page,
+          pageSize,
+          totalRecords,
+          job,
+          status,
+          sorted
+        }
+      } = action;
       return {
         ...state,
         allApplicants: {
           loading: false,
-          data: action.payload,
+          // data: action.payload,
+          data,
+          totalPages,
+          page,
+          pageSize,
+          totalRecords,
+          status, 
+          job, 
+          sorted
         },
       };
     case GET_ALL_APPLICANTS_FAILED:

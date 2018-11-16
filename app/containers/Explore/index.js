@@ -206,58 +206,59 @@ export class Explore extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this._handleQueryStringParameters();
+    this._handleQueryStringParameters(prevProps);
   }
 
-  _handleQueryStringParameters = () => {
+  _handleQueryStringParameters = (prevProps, prevState) => {
     if (this.props.applicants.loading) {
       return;
     }
 
     const filterParameters = this._getQueryStringParameters();
-    const filterParameterKeys = Object.keys(filterParameters);
-    const keysToUpdate = [];
 
-    for (let i = 0; i < filterParameterKeys.length; i++) {
-      const filterParameterKey = filterParameterKeys[i];
-      const filterParameter = filterParameters[filterParameterKey];
-      const stateParameter = this.state[filterParameterKey];
+    const {
+      status,
+      job,
+      sorted,
+      page,
+    } = filterParameters;
 
-      const isSame = _.isEqual(filterParameter, stateParameter);
-
-      if (isSame) {
-        continue;
-      }
-
-      keysToUpdate.push(filterParameterKey);
-    }
-
-    if (keysToUpdate.length < 1 && this.props.applicants.data.length > 0) {
-      return;
-    } else if (keysToUpdate.length < 1 && this.props.applicants.data.length < 1) {
-      return;
-    }
-
-    const stateUpdatePayload = {};
-
-    for (let i = 0; i < keysToUpdate.length; i++) {
-      const keyToUpdate = keysToUpdate[i];
-      stateUpdatePayload[keyToUpdate] = filterParameters[keyToUpdate];
-    }
-
-    this.setState(stateUpdatePayload, () => {
-      const {
+    if (!prevProps) {
+      return this.props.getAllApplicants({
         status,
         job,
         sorted,
-      } = this.state;
-
-      this.props.getAllApplicants({
-        status,
-        job,
-        sorted,
+        page,
+        pageSize: this.state.pageLimit,
       });
+    }
+
+    const {
+      applicants,
+    } = this.props;
+
+    let changeDetected = false;
+    const updatePaylod = _.cloneDeep(filterParameters);
+    const keys = Object.keys(filterParameters);
+
+    keys.forEach(x => {
+      if (!_.isEqual(filterParameters[x], applicants[x])) {
+        changeDetected = true;
+        updatePaylod[x] = filterParameters[x];
+      }
+    })
+
+    if (!changeDetected) {
+      return;
+    }
+
+
+    return this.props.getAllApplicants({
+      ...updatePaylod,
+      pageSize: this.state.pageLimit,
     });
+
+
   }
 
   _getQueryStringParameters() {
@@ -312,25 +313,19 @@ export class Explore extends React.PureComponent {
   }
 
   onPageChanged = data => {
-    const allApplicants = this.props.applicants.data;
-    const { currentPage, totalPages, pageLimit } = data;
+    const { status, job, sorted } = this.props.applicants;
+    const { currentPage } = data;
 
-    const offset = (currentPage - 1) * pageLimit;
-    const currentApplicants = allApplicants.slice(offset, offset + pageLimit);
-
-    this.setState({ currentPage, currentApplicants, totalPages }, () => {
-      const { status, job, sorted } = this.state;
-      this.manageFilterChanges({
-        status,
-        job,
-        sorted,
-        page: currentPage,
-      });
+    this.manageFilterChanges({
+      status,
+      job,
+      sorted,
+      page: currentPage,
     });
   };
 
   dropdownFilterChange = (name, value) => {
-    const { status, job, sorted, currentPage } = this.state;
+    const { status, job, sorted } = this.props.applicants;
 
     const updatedStatus = name === 'status' ? value : status;
     const updatedJob = name === 'job' ? value : job;
@@ -339,7 +334,7 @@ export class Explore extends React.PureComponent {
       status: updatedStatus,
       job: updatedJob,
       sorted,
-      page: currentPage,
+      page: 1,
     });
   };
 
@@ -406,14 +401,6 @@ export class Explore extends React.PureComponent {
 
   render() {
     const { history, match } = this.props;
-    const {
-      status,
-      job,
-      sorted,
-      currentApplicants,
-      currentPage,
-      pageLimit,
-    } = this.state;
 
     if (this.props.applicants.loading) {
       return (
@@ -431,7 +418,20 @@ export class Explore extends React.PureComponent {
       );
     }
 
-    const allApplicants = this.props.applicants.data;
+    const {
+      applicants: {
+        data,
+        totalPages,
+        page,
+        pageSize,
+        totalRecords,
+        status,
+        job,
+        sorted,
+      },
+    } = this.props;
+
+    const allApplicants = data;
 
     const totalApplicants = allApplicants.length;
 
@@ -470,7 +470,7 @@ export class Explore extends React.PureComponent {
               {sorted === 'highest' && (
                 <Button
                   type="sortbyHighest"
-                  sorted={this.state.sorted}
+                  sorted={sorted}
                   onClick={() => this.sortByRank('lowest')}
                 >
                   Highest Rank
@@ -479,7 +479,7 @@ export class Explore extends React.PureComponent {
               {sorted === 'lowest' && (
                 <Button
                   type="sortbyLowest"
-                  sorted={this.state.sorted}
+                  sorted={sorted}
                   onClick={() => this.sortByRank('highest')}
                 >
                   Lowest Rank
@@ -495,7 +495,7 @@ export class Explore extends React.PureComponent {
           </ResetIconContainer>
         </ResetFilterRow>
         <ContentRow>
-          <Table>            
+          <Table>
             <thead>
               <tr>
                 <th>Full Name</th>
@@ -507,7 +507,7 @@ export class Explore extends React.PureComponent {
               </tr>
             </thead>
             <tbody>
-              {currentApplicants.map(applicant => (
+              {allApplicants.map(applicant => (
                 <tr key={applicant.id}>
                   <td>{applicant.full_name}</td>
                   <td>{applicant.email}</td>
@@ -522,9 +522,9 @@ export class Explore extends React.PureComponent {
         </ContentRow>
         <PaginationRow>
           <Pagination
-            totalRecords={totalApplicants}
-            pageLimit={pageLimit}
-            currentPage={currentPage}
+            totalRecords={totalRecords}
+            pageLimit={pageSize}
+            currentPage={page}
             onPageChanged={this.onPageChanged}
           />
         </PaginationRow>

@@ -74,9 +74,9 @@ const range = (from, to, step = 1) => {
 class Pagination extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { totalRecords = null, pageLimit = 30, currentPage } = props;
+    const { totalRecords, pageLimit, currentPage } = props;
 
-    this.pageLimit = typeof pageLimit === 'number' ? pageLimit : 30;
+    this.pageLimit = typeof pageLimit === 'number' ? pageLimit : 10;
     this.totalRecords = typeof totalRecords === 'number' ? totalRecords : 0;
     this.currentPage = typeof currentPage === 'number' ? currentPage: 1; 
 
