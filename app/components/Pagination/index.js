@@ -72,36 +72,21 @@ const range = (from, to, step = 1) => {
 
 /* eslint-disable react/prefer-stateless-function */
 class Pagination extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    const { totalRecords, pageLimit, currentPage } = props;
-
-    this.pageLimit = typeof pageLimit === 'number' ? pageLimit : 10;
-    this.totalRecords = typeof totalRecords === 'number' ? totalRecords : 0;
-    this.currentPage = typeof currentPage === 'number' ? currentPage: 1; 
-
-    this.totalPages = Math.ceil(this.totalRecords / this.pageLimit);
-
-    this.state = { currentPage };
-  }
-
   componentDidMount() {
-    this.gotoPage(this.currentPage);
+    const { currentPage } = this.props;
+    this.gotoPage(currentPage);
   }
 
   gotoPage = page => {
-    const { onPageChanged = f => f } = this.props;
+    const { onPageChanged = f => f, totalPages } = this.props;
 
-    const currentPage = Math.max(0, Math.min(page, this.totalPages));
+    const currentPage = Math.max(0, Math.min(page, totalPages));
 
     const paginationData = {
       currentPage,
-      totalPages: this.totalPages,
-      pageLimit: this.pageLimit,
-      totalRecords: this.totalRecords,
     };
 
-    this.setState({ currentPage }, () => onPageChanged(paginationData));
+    onPageChanged(paginationData);
   };
 
   handleClick = (page, evt) => {
@@ -111,23 +96,26 @@ class Pagination extends React.PureComponent {
 
   handleMoveLeft = evt => {
     evt.preventDefault();
-    if (this.state.currentPage === 1) {
+    const { currentPage } = this.props;
+    if (currentPage === 1) {
       return;
     }
-    this.gotoPage(this.state.currentPage - 1);
+    this.gotoPage(currentPage - 1);
   };
 
   handleMoveRight = evt => {
     evt.preventDefault();
-    if (this.state.currentPage === this.totalPages) {
+    const { currentPage, totalPages } = this.props;
+    if (currentPage === totalPages) {
       return;
     }
-    this.gotoPage(this.state.currentPage + 1);
+    this.gotoPage(currentPage + 1);
   };
 
   handleMoveToFirst = evt => {
     evt.preventDefault();
-    if (this.state.currentPage === 1) {
+    const { currentPage } = this.props;
+    if (currentPage === 1) {
       return;
     }
     this.gotoPage(1);
@@ -135,15 +123,15 @@ class Pagination extends React.PureComponent {
 
   handleMoveToLast = evt => {
     evt.preventDefault();
-    if (this.state.currentPage === this.totalPages) {
+    const { currentPage, totalPages } = this.props;
+    if (currentPage === totalPages) {
       return;
     }
-    this.gotoPage(this.totalPages);
+    this.gotoPage(totalPages);
   }
 
   fetchPageNumbers = () => {
-    const { totalPages } = this;
-    const { currentPage } = this.state;
+    const { currentPage, totalPages } = this.props;
     const chunkSize = 6;
 
     const allPages = range(1, totalPages);
@@ -198,11 +186,11 @@ class Pagination extends React.PureComponent {
   };
 
   render() {
-    if (!this.totalRecords) return null;
+    const { currentPage, totalRecords, totalPages } = this.props;
+    if (!totalRecords) return null;
 
-    if (this.totalPages === 1) return null;
+    if (totalPages === 1) return null;
 
-    const { currentPage } = this.state;
     const pages = this.fetchPageNumbers();
     const targetPages = [];
 

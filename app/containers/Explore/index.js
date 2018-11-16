@@ -17,12 +17,10 @@ import jobs from 'assets/sample-data/jobs.json';
 import statuses from 'assets/sample-data/job-statuses.json';
 import ResetIcon from 'assets/common-images/reset.svg';
 import DashboardLayout from 'components/DashboardLayout';
-import SearchBox from 'components/SearchBox';
 import Dropdown from 'components/Dropdown';
 import Button from 'components/Button';
 import Pagination from 'components/Pagination';
 import Loading from 'components/Loading';
-import SelectedFilter from 'components/SelectedFilter';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -431,15 +429,10 @@ export class Explore extends React.PureComponent {
       },
     } = this.props;
 
-    const allApplicants = data;
-
-    const totalApplicants = allApplicants.length;
-
     return (
       <DashboardLayout history={history} match={match}>
         <SearchBarRow>
           <Title>Overview</Title>
-          <SearchBox />
         </SearchBarRow>
         <FilterSortRow container alignItems="center">
           <Grid item xs={12} md={5}>
@@ -507,7 +500,7 @@ export class Explore extends React.PureComponent {
               </tr>
             </thead>
             <tbody>
-              {allApplicants.map(applicant => (
+              {data.map(applicant => (
                 <tr key={applicant.id}>
                   <td>{applicant.full_name}</td>
                   <td>{applicant.email}</td>
@@ -522,6 +515,7 @@ export class Explore extends React.PureComponent {
         </ContentRow>
         <PaginationRow>
           <Pagination
+            totalPages={totalPages}
             totalRecords={totalRecords}
             pageLimit={pageSize}
             currentPage={page}
