@@ -13,13 +13,12 @@ import { compose } from 'redux';
 import _ from 'lodash';
 
 import allApplicants from 'assets/sample-data/applicants.json';
-import jobs from 'assets/sample-data/jobs.json';
-import statuses from 'assets/sample-data/job-statuses.json';
 import { Grid } from '@material-ui/core';
 import DashboardLayout from 'components/DashboardLayout';
 import Dropdown from 'components/Dropdown';
 import Loading from 'components/Loading';
 import BarChart from 'components/BarCharts';
+import PieChart from 'components/PieCharts';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -32,7 +31,7 @@ const TitleRow = styled.div`
   max-width: 1125px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  // align-items: center;
   margin-bottom: 30px;
 
   @media (max-width: 768px) {
@@ -57,23 +56,32 @@ const Title = styled.p`
 const FilterBoxContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
 `;
 
 const ContentRow = styled.div`
   width: 100vw;
-  // max-width: 1125px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
   margin-bottom: 3em;
   background-color: #47474f;
+  padding: 30px;
 `;
 
-const BarChartContainer = styled.div`
-  padding: 30px 20px;
-  // background-color: #47474f;
+const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ContentTitle = styled.p`
+  font-size: 20px;
+  // font-weight: bold;
+  letter-spacing: 0.3px;
+`;
+
+const ContentText = styled.p`
+  margin: 0;
 `;
 
 /* eslint-disable react/prefer-stateless-function */
@@ -94,7 +102,7 @@ export class Report extends React.PureComponent {
     alert('Reset');
   };
 
-  getDataBasedOnRange = () => {
+  getBarDataBasedOnRange = () => {
     const { range } = this.state;
 
     let data = allApplicants;
@@ -104,13 +112,12 @@ export class Report extends React.PureComponent {
         .sortBy(x => x.created_date)
         .groupBy(x => x.created_date.substring(0, 7))
         .map((value, key) => {
-          const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
-          const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
+          // const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
+          // const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
 
           return {
             name: key,
-            Intern: intern.length,
-            Developer: developer.length,
+            value: value.length,
           };
         })
         .value();
@@ -120,13 +127,51 @@ export class Report extends React.PureComponent {
         .sortBy(x => x.created_date)
         .groupBy(x => x.created_date.substring(0, 4))
         .map((value, key) => {
-          const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
-          const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
+          // const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
+          // const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
 
           return {
             name: key,
-            Intern: intern.length,
-            Developer: developer.length,
+            value: value.length,
+          };
+        })
+        .value();
+    }
+
+    return data;
+  };
+
+  getPieDataBasedOnRange = () => {
+    const { range } = this.state;
+
+    let data = allApplicants;
+    if (range.toUpperCase() === 'MONTH') {
+      data = _
+        .chain(allApplicants)
+        .sortBy(x => x.created_date)
+        .groupBy(x => x.job_title)
+        .map((value, key) => {
+          // const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
+          // const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
+
+          return {
+            name: key,
+            value: value.length,
+          };
+        })
+        .value();
+    } else if (range.toUpperCase() === 'YEAR') {
+      data = _
+        .chain(allApplicants)
+        .sortBy(x => x.created_date)
+        .groupBy(x => x.job_title)
+        .map((value, key) => {
+          // const intern = value.filter(x => x.job_title.toUpperCase() === 'INTERN');
+          // const developer = value.filter(x => x.job_title.toUpperCase() === 'DEVELOPER');
+
+          return {
+            name: key,
+            value: value.length,
           };
         })
         .value();
@@ -150,12 +195,16 @@ export class Report extends React.PureComponent {
       }
     ];
 
-    const data = this.getDataBasedOnRange();
+    const barData = this.getBarDataBasedOnRange();
+    const pieData = this.getPieDataBasedOnRange();
+    console.log('pie', pieData);
 
     return (
       <DashboardLayout history={history} match={match}>
         <TitleRow>
           <Title>Report</Title>
+        </TitleRow>
+        <ContentRow>
           <FilterBoxContainer>
             <Dropdown
               type="primary"
@@ -166,11 +215,21 @@ export class Report extends React.PureComponent {
               onChange={this.dropdownFilterChange}
             />
           </FilterBoxContainer>
-        </TitleRow>
+          <BarChart data={barData} range={range} />
+        </ContentRow>
         <ContentRow>
-          <BarChartContainer>
-            <BarChart data={data} range={range}/>
-          </BarChartContainer>
+          <Grid item xs={12} md={6}>
+            <PieChart data={pieData} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextContent>
+              <ContentTitle>{`Total applicants for ${range} :`}</ContentTitle>
+              {pieData.map(x => (
+                <ContentText>{x.name} - {x.value} Applicants</ContentText>
+              ))}
+            </TextContent>
+          </Grid>
+
         </ContentRow>
       </DashboardLayout>
     );

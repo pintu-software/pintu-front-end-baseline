@@ -66,19 +66,19 @@ class BarCharts extends React.PureComponent {
           formatter={(value) => (`${value} Applicants`)}
           cursor={false}
         />
-        <Legend verticalAlign="top" wrapperStyle={{ color: '#ffffff' }} />
+        {/* <Legend verticalAlign="top" wrapperStyle={{ color: '#ffffff' }} /> */}
         <Bar
-          dataKey="Intern"
-          fill="#ffe7b9"
-          barSize={50}
-          label={{ position: 'top', fill: '#dddddd', fontSize: 10, fontWeight: 'normal', letterSpacing: 'normal' }}
-        />
-        <Bar
-          dataKey="Developer"
+          dataKey="value"
           fill="#ffbc12"
           barSize={50}
           label={{ position: 'top', fill: '#dddddd', fontSize: 10, fontWeight: 'normal', letterSpacing: 'normal' }}
         />
+        {/* <Bar
+          dataKey="Developer"
+          fill="#ffe7b9"
+          barSize={50}
+          label={{ position: 'top', fill: '#dddddd', fontSize: 10, fontWeight: 'normal', letterSpacing: 'normal' }}
+        /> */}
       </BarChart>
     );
   }
