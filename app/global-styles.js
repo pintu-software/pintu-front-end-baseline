@@ -135,4 +135,14 @@ injectGlobal`
     line-height: 1.38;
     letter-spacing: normal;
   }
+
+  .tooltip-wrapper {
+    background-color: #26272c !important;
+    color: #fff !important;
+    border-radius: 2px !important;
+    padding: 12px !important;
+    border: 0 !important;
+    font-family: 'ProximaNovaRegular', sans-serif !important;
+    font-size: 14px !important;
+  }
 `;

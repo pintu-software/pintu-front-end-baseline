@@ -7,13 +7,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import moment from 'moment';
 import Logo from 'images/pintu-logo-white.png';
-import RefreshIcon from 'assets/common-images/refresh.svg';
-import UserIcon from 'assets/common-images/user.svg';
 import DropdownIcon from 'assets/common-images/caret.svg';
-import DashboardIcon from 'assets/common-images/dashboard-white.svg';
-import LearningIcon from 'assets/common-images/learning-white.svg';
 import Person from '@material-ui/icons/Person';
 
 import {
@@ -54,37 +49,6 @@ const LogoStyled = styled.img`
   height: 40px;
 `;
 
-const LeftBarContainer = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 60px;
-  top: 62px;
-  left: 0;
-  bottom: 0;
-  background-color: #2b2b34;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  @media (max-width: 959px) {
-    top: 62px;
-  }
-`;
-
-const NavIconContainer = styled.div`
-  width: 60px;
-  height: 60px;
-  text-align: center;
-  padding: 15px 0 15px 0;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #47474f;
-  }
-
-  background-color: ${({ active }) => (active ? '#47474f' : '#2b2b34')};
-`;
-
 const LeftBarSubContainer = styled.div`
   position: absolute;
   width: 226px;
@@ -116,35 +80,10 @@ const LeftBarSubTitle = styled.p`
   margin-left: 13px;
 `;
 
-const UserIconStyled = styled.img`
-  width: 24px;
-  height: 24px;
-`;
-
 const DropdownIconStyled = styled.img`
   width: 15px;
   height: 15px;
   margin-left: 8px;
-`;
-
-const RefreshIconContainer = styled.div`
-  text-align: center;
-  cursor: pointer;
-`;
-
-const RefreshStyled = styled.img`
-  width: 17px;
-  height: 17px;
-`;
-
-const DashboardIconStyled = styled.img`
-  width: 27px;
-  height: 27px;
-`;
-
-const LearningIconStyled = styled.img`
-  width: 27px;
-  height: 27px;
 `;
 
 const MenuContainer = styled.div`
@@ -191,6 +130,11 @@ class DashboardLayout extends React.PureComponent {
     history.push('/');
   };
 
+  goToReport = () => {
+    const { history } = this.props;
+    history.push('/report');
+  };
+
   componentWillUnmount() {
     window.clearInterval(this.timeIntervalDelegate);
   }
@@ -228,7 +172,6 @@ class DashboardLayout extends React.PureComponent {
                 aria-haspopup="true"
                 onClick={this.handleClick}
               >
-                {/* <UserIconStyled src={UserIcon} alt="user" /> */}
                 <Person style={{ color: '#ffffff' }} />
                 <DropdownIconStyled src={DropdownIcon} alt="dropdown" />
               </IconButton>
@@ -260,6 +203,9 @@ class DashboardLayout extends React.PureComponent {
           <LeftBarSubTitle>Recruitment</LeftBarSubTitle>
           <MenuContainer active={url === '/'} onClick={this.goToExplore}>
             Overview
+          </MenuContainer>
+          <MenuContainer active={url === '/report'} onClick={this.goToReport}>
+            Report
           </MenuContainer>
         </LeftBarSubContainer>
         <Container container>{children}</Container>

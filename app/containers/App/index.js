@@ -20,6 +20,7 @@ import { compose } from 'redux';
 
 import Login from 'containers/Login/Loadable';
 import Explore from 'containers/Explore/Loadable';
+import Report from 'containers/Report/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Loading from 'components/Loading';
 import Warning from 'components/Warning';
@@ -53,6 +54,7 @@ export class App extends React.Component {
       <Switch>
         <Route exact path="/login" name="login" component={Login} />
         <Route exact path="/" name="overview" component={Explore} />
+        <Route exact path="/report" name="report" component={Report} />
         <Route path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
       </Switch>
