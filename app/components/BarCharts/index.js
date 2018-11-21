@@ -92,7 +92,7 @@ class BarCharts extends React.PureComponent {
           tickLine={false}
           tick={axisTickStyle}
           axisLine={{ stroke: '#ffffff' }}
-          ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+          ticks={[0, 10, 20, 30, 40, 50]}
         />
         <Tooltip
           itemStyle={tooltipItemStyle}
