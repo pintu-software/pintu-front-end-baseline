@@ -32,8 +32,17 @@ class PieCharts extends React.PureComponent {
     }
 
     return (
-      <PieChart width={500} height={360}>
-        <Pie data={data} cx={250} cy={180} innerRadius={60} outerRadius={120}>
+      <PieChart width={360} height={320}>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          cx={180}
+          cy={160}
+          innerRadius={60}
+          outerRadius={120}
+          strokeWidth={0}
+        >
           {data.map(({ name }, index) => (
             <Cell
               key={name}

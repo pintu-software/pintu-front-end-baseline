@@ -121,9 +121,9 @@ injectGlobal`
     font-weight: 500 !important;
     font-style: normal !important;
     font-stretch: normal !important;
-    line-height: 1.5 !important;
-    letter-spacing: normal !important;
-    color: #dddddd !important;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #dddddd;
   }
 
   button {
@@ -140,7 +140,7 @@ injectGlobal`
     background-color: #26272c !important;
     color: #fff !important;
     border-radius: 2px !important;
-    padding: 12px !important;
+    padding: 8px 12px !important;
     border: 0 !important;
     font-family: 'ProximaNovaRegular', sans-serif !important;
     font-size: 14px !important;

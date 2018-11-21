@@ -6,6 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import _ from 'lodash';
 import moment from 'moment';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
@@ -25,16 +26,49 @@ const tooltipItemStyle = {
   margin: '0',
 };
 
+const TooltipContainer = styled.div`
+  background-color: #26272c !important;
+  color: #fff !important;
+  border-radius: 2px !important;
+  padding: 1px 12px;
+  border: 0 !important;
+  font-family: 'ProximaNovaRegular', sans-serif !important;
+  font-size: 14px !important;
+`;
+
+const TooltipItem = styled.p`
+  font-size: 14px;
+  font-weight: '500';
+  color: #fff;
+  margin: '0';
+`;
+
 /* eslint-disable react/prefer-stateless-function */
 class BarCharts extends React.PureComponent {
   tickFormatter = (tick) => {
     const { range } = this.props;
 
-    if (range.toUpperCase() === 'MONTH') {
-      tick = moment(tick).format("MMM-YY"); 
+    if (range === 1 || range === 3) {
+      tick = moment(tick).format("Do MMM"); 
+    } else if (range === 2 || range === 4) {
+      tick = moment(tick).format("MMM"); 
     }
 
     return tick;
+  };
+
+  renderTooltip = (props) => {    
+    const { active } = props;
+    if (active) {
+      const { payload } = props;
+      return (
+        <TooltipContainer>
+          <TooltipItem>{`${payload[0].value} Applicants`}</TooltipItem>
+        </TooltipContainer>
+      );
+    }
+
+    return null;
   };
 
   render() {
@@ -63,8 +97,21 @@ class BarCharts extends React.PureComponent {
         <Tooltip
           itemStyle={tooltipItemStyle}
           wrapperClassName={'tooltip-wrapper'}
-          formatter={(value) => (`${value} Applicants`)}
+          // formatter={(value, name, props) => {
+          //   console.log('formatter', value, name, props);
+          //   return `Total: ${value} Applicants`;
+          // }}
+          labelFormatter={(value) => {
+            if (range === 1 || range === 3) {
+              return moment(value).format("Do MMM"); 
+            }
+
+            if (range === 2 || range === 4) {
+              return moment(value).format("MMMM"); 
+            }
+           }}
           cursor={false}
+          content={(props) => this.renderTooltip(props)}
         />
         {/* <Legend verticalAlign="top" wrapperStyle={{ color: '#ffffff' }} /> */}
         <Bar
