@@ -28,7 +28,7 @@ class PieCharts extends React.PureComponent {
   render() {
     const { data } = this.props;
     if (!data || data.length < 1) {
-      return <div>Loading..</div>;
+      return <div>No data found.</div>;
     }
 
     return (
