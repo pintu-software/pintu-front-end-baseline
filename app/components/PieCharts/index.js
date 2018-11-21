@@ -32,12 +32,12 @@ class PieCharts extends React.PureComponent {
     }
 
     return (
-      <PieChart width={360} height={320}>
+      <PieChart width={400} height={320}>
         <Pie
           data={data}
           dataKey="value"
           nameKey="name"
-          cx={180}
+          cx={260}
           cy={160}
           innerRadius={60}
           outerRadius={120}

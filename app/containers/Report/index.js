@@ -68,8 +68,6 @@ const ContentRow = styled.div`
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: 3em;
-  background-color: #47474f;
-  padding: 30px;
 `;
 
 const BarChartContainer = styled.div`
@@ -83,35 +81,38 @@ const Table = styled.table`
 
   tr {
     padding: 8px;
-    background-color: #56565b;
+    // background-color: #56565b;
+    border-bottom: solid 1px #56565b;
 
     &:nth-child(even) {
-      background-color: #3d3d42;
+      // background-color: #3d3d42;
     }
   }
 
   td {
-    padding: 10px 20px;
+    padding: 16px;
     font-size: 14px;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
     line-height: 1.42;
     letter-spacing: normal;
-    color: #dddddd;
+    color: #ffffff;
   }
 
   th {
-    padding: 10px 20px;
+    padding: 16px;
     text-align: left;
-    background-color: #6d6e71;
+    // background-color: #6d6e71;
+    border-bottom: solid 1px #56565b;
     font-size: 12px;
     font-weight: bold;
     font-style: normal;
     font-stretch: normal;
     line-height: 1.3;
     letter-spacing: normal;
-    color: #dddddd;
+    // color: #ffffff;
+    color: #ffbc12;
     text-transform: uppercase;
   }
 `;
