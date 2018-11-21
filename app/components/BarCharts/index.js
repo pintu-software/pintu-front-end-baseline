@@ -43,6 +43,11 @@ const TooltipItem = styled.p`
   margin: '0';
 `;
 
+const Container = styled.div`
+  color: #ffffff;
+  text-align: center;
+`;
+
 /* eslint-disable react/prefer-stateless-function */
 class BarCharts extends React.PureComponent {
   tickFormatter = (tick) => {
@@ -74,7 +79,7 @@ class BarCharts extends React.PureComponent {
   render() {
     const { data, range } = this.props;
     if (!data || data.length < 1) {
-      return <div>No data found.</div>;
+      return <Container>No data found.</Container>;
     }
 
     return (

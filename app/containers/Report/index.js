@@ -74,6 +74,8 @@ const BarChartContainer = styled.div`
   padding-bottom: 4em;
   margin-bottom: 2em;
   border-bottom: solid 1px #26272c;
+  min-width: 1194px;
+  min-height: 400px;
 `;
 
 const Table = styled.table`
@@ -143,7 +145,7 @@ export class Report extends React.PureComponent {
       data = _
         .chain(allApplicants)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === 2)
+        .filter(x => moment(x.created_date).month() === moment().month() && moment(x.created_date).year() === '2018')
         .groupBy(x => x.created_date)
         .map((value, key) => {
           return {
@@ -173,7 +175,8 @@ export class Report extends React.PureComponent {
       data = _
         .chain(allApplicants)
         .sortBy(x => x.created_date)
-        .groupBy(x => x.created_date.substring(0, 7))
+        .filter(x => moment(x.created_date).month() === (moment().month() - 1) && moment(x.created_date).year() === '2018')
+        .groupBy(x => x.created_date)
         .map((value, key) => {
           return {
             name: key,
@@ -209,7 +212,7 @@ export class Report extends React.PureComponent {
       data = _
         .chain(allApplicants)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === 2)
+        .filter(x => moment(x.created_date).month() === moment().month() && moment(x.created_date).year() === '2018')
         .groupBy(x => x.job_title)
         .map((value, key) => {
           return {
@@ -239,6 +242,7 @@ export class Report extends React.PureComponent {
       data = _
         .chain(allApplicants)
         .sortBy(x => x.created_date)
+        .filter(x => moment(x.created_date).month() === (moment().month() - 1) && moment(x.created_date).year() === '2018')
         .groupBy(x => x.job_title)
         .map((value, key) => {
           return {
@@ -271,26 +275,45 @@ export class Report extends React.PureComponent {
     const { history, match } = this.props;
     const { range } = this.state;
 
+    // const ranges = [
+    //   {
+    //     "label": "This Month",
+    //     "value": 1
+    //   },
+    //   {
+    //     "label": "This Year",
+    //     "value": 2
+    //   },
+    //   {
+    //     "label": "Last Month",
+    //     "value": 3
+    //   },
+    //   {
+    //     "label": "Last Year",
+    //     "value": 4
+    //   }
+    // ];
+
     const ranges = [
-      // {
-      //   "label": "This Month",
-      //   "value": 1
-      // },
       {
-        "label": "2018",
+        "label": "This Year",
         "value": 2
       },
-      // {
-      //   "label": "Last Month",
-      //   "value": 3
-      // },
       {
-        "label": "2017",
+        "label": "Last Year",
         "value": 4
-      }
+      },
+      {
+        "label": "This Month",
+        "value": 1
+      },
+      {
+        "label": "Last Month",
+        "value": 3
+      },
     ];
 
-    const selectedRange = ranges.find(item => item.value === range);
+    // const selectedRange = ranges.find(item => item.value === range);
     const barData = this.getBarDataBasedOnRange();
     const pieData = this.getPieDataBasedOnRange();
 

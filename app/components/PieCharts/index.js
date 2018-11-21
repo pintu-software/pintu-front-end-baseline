@@ -6,6 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { PieChart, Pie, Legend, Tooltip, Cell } from 'recharts';
 
 const colors = [
@@ -22,6 +23,11 @@ const tooltipItemStyle = {
   fontWeight: '500',
   margin: '0',
 };
+
+const Container = styled.div`
+  color: #ffffff;
+  text-align: center;
+`;
 
 /* eslint-disable react/prefer-stateless-function */
 class PieCharts extends React.PureComponent {
@@ -41,7 +47,7 @@ class PieCharts extends React.PureComponent {
   render() {
     const { data } = this.props;
     if (!data || data.length < 1) {
-      return <div>No data found.</div>;
+      return <Container>No data found.</Container>;
     }
 
     return (
