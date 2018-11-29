@@ -14,6 +14,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import allApplicants from 'assets/sample-data/applicants.json';
+import statuses from 'assets/sample-data/job-statuses.json';
 import { Grid } from '@material-ui/core';
 import DashboardLayout from 'components/DashboardLayout';
 import Dropdown from 'components/Dropdown';
@@ -33,7 +34,7 @@ const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   // align-items: center;
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
 
   @media (max-width: 768px) {
     max-width: 475px;
@@ -50,6 +51,26 @@ const Title = styled.p`
   font-stretch: normal;
   line-height: 1.3;
   letter-spacing: 0.1px;
+  color: #dddddd;
+  text-transform: uppercase;
+`;
+
+const FilterRow = styled.div`
+  width: 100vw;
+  max-width: 1194px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-bottom: 3em;
+`;
+
+const Label = styled.p`
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
   color: #dddddd;
   text-transform: uppercase;
 `;
@@ -122,10 +143,45 @@ const Table = styled.table`
 /* eslint-disable react/prefer-stateless-function */
 export class Report extends React.PureComponent {
   state = {
-    job: 'All',
     status: 'All',
-    range: 2,
+    range: 1,
   };
+
+  reportingData = [];
+
+  constructor(props) {
+    super(props);
+
+    const rawData = _.chain(allApplicants)
+      .map(x => {
+        const item = _.cloneDeep(x);
+        item.createdDate = moment(x.created_date, moment.ISO_8601);
+        item.createYear = item.createdDate.year();
+
+        return item;
+      })
+      .groupBy(x => x.createYear)
+      .value();
+
+    const years = _.chain(Object.keys(rawData)).map(x => Number(x)).sortBy(x => x).reverse().value();
+    const numberOfyears = years.length;
+
+    const currentYear = moment().year();
+
+    for (let i = 0; i < numberOfyears; i++) {
+      const newYear = currentYear - i;
+      const targetyear = years[i];
+      var entries = rawData[targetyear];
+
+      entries.forEach(x => {
+        const clonedItem = _.cloneDeep(x);
+        clonedItem.createdDate = clonedItem.createdDate.year(newYear);
+        clonedItem.createYear = newYear;
+        clonedItem.created_date = clonedItem.createdDate.toISOString();
+        this.reportingData.push(clonedItem);
+      });
+    }
+  }
 
   dropdownFilterChange = (name, value) => {
     this.setState({
@@ -138,15 +194,52 @@ export class Report extends React.PureComponent {
   };
 
   getBarDataBasedOnRange = () => {
-    const { range } = this.state;
+    const { range, status } = this.state;
 
-    let data = allApplicants;
+    let data = this.reportingData;
+
+    if (status.toUpperCase() === 'ALL') {
+      if (range === 1) {
+        data = _
+          .chain(data)
+          .sortBy(x => x.created_date)
+          .filter(x => moment(x.created_date).year() === moment().year())
+          .groupBy(x => x.created_date.substring(0, 7))
+          .map((value, key) => {
+            return {
+              name: key,
+              value: value.length,
+            };
+          })
+          .value();
+
+        return data;
+      }
+
+      if (range === 2) {
+        data = _
+          .chain(data)
+          .sortBy(x => x.created_date)
+          .filter(x => moment(x.created_date).year() === (moment().year() - 1))
+          .groupBy(x => x.created_date.substring(0, 7))
+          .map((value, key) => {
+            return {
+              name: key,
+              value: value.length,
+            };
+          })
+          .value();
+
+        return data;
+      }
+    }
+
     if (range === 1) {
       data = _
-        .chain(allApplicants)
+        .chain(data)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === moment().month() && moment(x.created_date).year() === '2018')
-        .groupBy(x => x.created_date)
+        .filter(x => moment(x.created_date).year() === moment().year() && x.status === status)
+        .groupBy(x => x.created_date.substring(0, 7))
         .map((value, key) => {
           return {
             name: key,
@@ -154,13 +247,15 @@ export class Report extends React.PureComponent {
           };
         })
         .value();
+
+      return data;
     }
 
     if (range === 2) {
       data = _
-        .chain(allApplicants)
+        .chain(data)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).year() === moment().year())
+        .filter(x => moment(x.created_date).year() === (moment().year() - 1) && x.status === status)
         .groupBy(x => x.created_date.substring(0, 7))
         .map((value, key) => {
           return {
@@ -169,50 +264,57 @@ export class Report extends React.PureComponent {
           };
         })
         .value();
-    }
 
-    if (range === 3) {
-      data = _
-        .chain(allApplicants)
-        .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === (moment().month() - 1) && moment(x.created_date).year() === '2018')
-        .groupBy(x => x.created_date)
-        .map((value, key) => {
-          return {
-            name: key,
-            value: value.length,
-          };
-        })
-        .value();
+      return data;
     }
-
-    if (range === 4) {
-      data = _
-        .chain(allApplicants)
-        .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).year() === (moment().year() - 1))
-        .groupBy(x => x.created_date.substring(0, 7))
-        .map((value, key) => {
-          return {
-            name: key,
-            value: value.length,
-          };
-        })
-        .value();
-    }
-
-    return data;
   };
 
   getPieDataBasedOnRange = () => {
-    const { range } = this.state;
+    const { range, status } = this.state;
 
-    let data = allApplicants;
+    let data = this.reportingData;
+
+    if (status.toUpperCase() === 'ALL') {
+      if (range === 1) {
+        data = _
+          .chain(data)
+          .sortBy(x => x.created_date)
+          .filter(x => moment(x.created_date).year() === moment().year())
+          .groupBy(x => x.job_title)
+          .map((value, key) => {
+            return {
+              name: key,
+              value: value.length,
+            };
+          })
+          .value();
+
+        return data;
+      }
+
+      if (range === 2) {
+        data = _
+          .chain(data)
+          .sortBy(x => x.created_date)
+          .filter(x => moment(x.created_date).year() === (moment().year() - 1))
+          .groupBy(x => x.job_title)
+          .map((value, key) => {
+            return {
+              name: key,
+              value: value.length,
+            };
+          })
+          .value();
+
+        return data;
+      }
+    }
+
     if (range === 1) {
       data = _
-        .chain(allApplicants)
+        .chain(data)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === moment().month() && moment(x.created_date).year() === '2018')
+        .filter(x => moment(x.created_date).year() === moment().year() && x.status === status)
         .groupBy(x => x.job_title)
         .map((value, key) => {
           return {
@@ -221,13 +323,15 @@ export class Report extends React.PureComponent {
           };
         })
         .value();
+
+      return data;
     }
 
     if (range === 2) {
       data = _
-        .chain(allApplicants)
+        .chain(data)
         .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).year() === moment().year())
+        .filter(x => moment(x.created_date).year() === (moment().year() - 1) && x.status === status)
         .groupBy(x => x.job_title)
         .map((value, key) => {
           return {
@@ -236,84 +340,26 @@ export class Report extends React.PureComponent {
           };
         })
         .value();
-    }
 
-    if (range === 3) {
-      data = _
-        .chain(allApplicants)
-        .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).month() === (moment().month() - 1) && moment(x.created_date).year() === '2018')
-        .groupBy(x => x.job_title)
-        .map((value, key) => {
-          return {
-            name: key,
-            value: value.length,
-          };
-        })
-        .value();
+      return data;
     }
-
-    if (range === 4) {
-      data = _
-        .chain(allApplicants)
-        .sortBy(x => x.created_date)
-        .filter(x => moment(x.created_date).year() === (moment().year() - 1))
-        .groupBy(x => x.job_title)
-        .map((value, key) => {
-          return {
-            name: key,
-            value: value.length,
-          };
-        })
-        .value();
-    }
-
-    return data;
   };
 
   render() {
     const { history, match } = this.props;
-    const { range } = this.state;
-
-    // const ranges = [
-    //   {
-    //     "label": "This Month",
-    //     "value": 1
-    //   },
-    //   {
-    //     "label": "This Year",
-    //     "value": 2
-    //   },
-    //   {
-    //     "label": "Last Month",
-    //     "value": 3
-    //   },
-    //   {
-    //     "label": "Last Year",
-    //     "value": 4
-    //   }
-    // ];
+    const { range, status } = this.state;
 
     const ranges = [
       {
         "label": "This Year",
-        "value": 2
-      },
-      {
-        "label": "Last Year",
-        "value": 4
-      },
-      {
-        "label": "This Month",
         "value": 1
       },
       {
-        "label": "Last Month",
-        "value": 3
+        "label": "Last Year",
+        "value": 2
       },
     ];
 
-    // const selectedRange = ranges.find(item => item.value === range);
     const barData = this.getBarDataBasedOnRange();
     const pieData = this.getPieDataBasedOnRange();
 
@@ -322,7 +368,8 @@ export class Report extends React.PureComponent {
         <TitleRow>
           <Title>Report</Title>
         </TitleRow>
-        <ContentRow>
+        <FilterRow>
+          <Label>Filter by</Label>
           <FilterBoxContainer>
             <Dropdown
               type="primary"
@@ -332,7 +379,17 @@ export class Report extends React.PureComponent {
               value={range}
               onChange={this.dropdownFilterChange}
             />
+            <Dropdown
+              type="primary"
+              items={statuses}
+              selectedItem={status}
+              placeholder={status ? status : 'Status'}
+              name="status"
+              onChange={this.dropdownFilterChange}
+            />
           </FilterBoxContainer>
+        </FilterRow>
+        <ContentRow>
           <BarChartContainer>
             <BarChart data={barData} range={range} />
           </BarChartContainer>
@@ -349,7 +406,7 @@ export class Report extends React.PureComponent {
               </thead>
               <tbody>
                 {pieData.map(x => (
-                  <tr key={x.id}>
+                  <tr>
                     <td>{x.name}</td>
                     <td>{x.value}</td>
                   </tr>

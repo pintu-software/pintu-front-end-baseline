@@ -279,7 +279,7 @@ Dropdown.propTypes = {
     }),
   ).isRequired,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array]),
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func,
   name: PropTypes.string,
   selectedArr: PropTypes.array,

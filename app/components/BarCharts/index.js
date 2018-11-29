@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import _ from 'lodash';
 import moment from 'moment';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 
 const axisTickStyle = {
   fontSize: '14px',
@@ -50,18 +50,6 @@ const Container = styled.div`
 
 /* eslint-disable react/prefer-stateless-function */
 class BarCharts extends React.PureComponent {
-  tickFormatter = (tick) => {
-    const { range } = this.props;
-
-    if (range === 1 || range === 3) {
-      tick = moment(tick).format("Do MMM"); 
-    } else if (range === 2 || range === 4) {
-      tick = moment(tick).format("MMM"); 
-    }
-
-    return tick;
-  };
-
   renderTooltip = (props) => {    
     const { active } = props;
     if (active) {
@@ -91,7 +79,7 @@ class BarCharts extends React.PureComponent {
           tick={axisTickStyle}
           tickMargin={20}
           axisLine={{ stroke: '#ffffff' }}
-          tickFormatter={(tick) => this.tickFormatter(tick)}
+          tickFormatter={(tick) => moment(tick).format("MMM")}
         />
         <YAxis
           tickLine={false}
@@ -102,35 +90,16 @@ class BarCharts extends React.PureComponent {
         <Tooltip
           itemStyle={tooltipItemStyle}
           wrapperClassName={'tooltip-wrapper'}
-          // formatter={(value, name, props) => {
-          //   console.log('formatter', value, name, props);
-          //   return `Total: ${value} Applicants`;
-          // }}
-          labelFormatter={(value) => {
-            if (range === 1 || range === 3) {
-              return moment(value).format("Do MMM"); 
-            }
-
-            if (range === 2 || range === 4) {
-              return moment(value).format("MMMM"); 
-            }
-           }}
+          labelFormatter={(value) => moment(value).format("MMMM")}
           cursor={false}
           content={(props) => this.renderTooltip(props)}
         />
-        {/* <Legend verticalAlign="top" wrapperStyle={{ color: '#ffffff' }} /> */}
         <Bar
           dataKey="value"
           fill="#ffbc12"
           barSize={50}
           label={{ position: 'top', fill: '#dddddd', fontSize: 10, fontWeight: 'normal', letterSpacing: 'normal' }}
         />
-        {/* <Bar
-          dataKey="Developer"
-          fill="#ffe7b9"
-          barSize={50}
-          label={{ position: 'top', fill: '#dddddd', fontSize: 10, fontWeight: 'normal', letterSpacing: 'normal' }}
-        /> */}
       </BarChart>
     );
   }
@@ -138,7 +107,7 @@ class BarCharts extends React.PureComponent {
 
 BarCharts.propTypes = {
   data: PropTypes.array,
-  range: PropTypes.string,
+  range: PropTypes.number,
 };
 
 export default BarCharts;
